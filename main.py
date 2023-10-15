@@ -5,7 +5,7 @@ from slack_sdk.errors import SlackApiError
 import json
 from dotenv import load_dotenv
 import os
-from config import FLIGHT_METHOD, DEPARTURE_DATE, SLACK_CHANNEL_OR_USER, ORIGIN_CURRENCY, DESTINATIONS, SEND_SLACK_MESSAGES
+from config import FLIGHT_METHOD, DEPARTURE_DATE, SLACK_CHANNEL_OR_USER, ORIGIN_CURRENCY, DESTINATIONS, SEND_SLACK_MESSAGES, LATEST_DEPARTURE_DATE
 
 
 load_dotenv()
@@ -42,7 +42,7 @@ def parse_data_and_post_slack(data, origin, dest):
         print(f"Could not parse departure date: {departure_date_str}")
         return  
 
-    if departure_date > datetime(2023, 11, 8):
+    if departure_date > LATEST_DEPARTURE_DATE:
         return 
 
     prices = data.get('prices', {})
@@ -93,7 +93,7 @@ def post_flights_data(url, origins, destinations):
                         "originLocationCode": origin
                     }
                 ],
-                "searchPreferences": {"mode": "bestByDay", "showMilesPrice": True},
+                "searchPreferences": {"mode": "bestByMonth", "showMilesPrice": True},
                 "travelers": [{"passengerTypeCode": "ADT"}]
             }
 
